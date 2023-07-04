@@ -33,9 +33,9 @@ const getUsers = (req, res) => {
 
 // функция вызова пользователя по ID
 const getUser = (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.params;
 
-  User.findById(id)
+  User.findById(userId)
     .then((user) => {
       console.log(user);
       res.send(user);

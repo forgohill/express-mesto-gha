@@ -1,9 +1,9 @@
-// тут хранится модель Юзер
+// тут хранится схема и модель User
 
 // подключаем монгус
 const mongoose = require('mongoose');
 
-// схема Юзер
+// схема User
 const userSchema = new mongoose.Schema({
   name: {
     type: String,

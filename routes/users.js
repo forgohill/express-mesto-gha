@@ -1,12 +1,12 @@
 const router = require('express').Router();
 
-// импорт котролеров
-const { createUser, getUsers, getUser } = require('../controllers/user');
+// импорт котроллеров
+const { createUser, getUsers, getUser } = require('../controllers/users');
 
-router.get('/:id', getUser);
+
 router.get('/', getUsers);
+router.get('/:userId', getUser);
 router.post('/', createUser);
-
 
 module.exports = router;
 

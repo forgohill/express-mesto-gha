@@ -8,6 +8,8 @@ const mongoose = require('mongoose');
 const { PORT = 3000 } = process.env;
 // импорт usersRouter
 const usersRouter = require('./routes/users');
+// импорт cardsRouter
+const cardsRouter = require('./routes/cards');
 // запускаем приложение из пакета экспресс
 const app = express();
 
@@ -20,10 +22,23 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
     console.log(error);
   });
 
+// временное решение авторизации
+app.use((req, res, next) => {
+  req.user = {
+    _id: '64a410674333ff3ca0f2290a' // тут _id одного из созданных пользователей
+  };
+
+  next();
+});
+
 // используем bodyParser
 app.use(bodyParser.json());
+
 // используем при обращаении к /users
 app.use('/users', usersRouter);
+
+// используем при обращаении к /cards
+app.use('/cards', cardsRouter);
 
 // выводим сообщение на экран
 app.get('/', (req, res) => res.send('Hello World!'));
