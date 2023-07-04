@@ -1,6 +1,32 @@
-const express = require('express')
-const app = express()
-const port = 3000
+// создаем фукнцию экспресс из пакета
+const express = require('express');
+// подключаем бадиПарсер
+const bodyParser = require('body-parser');
+// импортируем монгус
+const mongoose = require('mongoose');
+// берем присвоение порта из лобального окружения
+const { PORT = 3000 } = process.env;
+// импорт usersRouter
+const usersRouter = require('./routes/users');
+// запускаем приложение из пакета экспресс
+const app = express();
 
-app.get('/', (req, res) => res.send('Hello World!'))
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+// подключаем базу данных
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
+  .then((data) => {
+    console.log('mongobd connecting');
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+// используем bodyParser
+app.use(bodyParser.json());
+// используем при обращаении к /users
+app.use('/users', usersRouter);
+
+// выводим сообщение на экран
+app.get('/', (req, res) => res.send('Hello World!'));
+
+// создаем слушателя PORT, 2й аргумент колбек — выводим сообщение
+app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));
