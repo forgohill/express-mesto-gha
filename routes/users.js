@@ -1,12 +1,29 @@
+/**
+ * GET /users — возвращает всех пользователей
+ * GET /users/:userId - возвращает пользователя по _id
+ * POST /users — создаёт пользователя
+ *
+ * PATCH /users/me — обновляет профиль
+ * PATCH /users/me/avatar — обновляет аватар
+ */
+
 const router = require('express').Router();
 
 // импорт котроллеров
-const { createUser, getUsers, getUser } = require('../controllers/users');
+const {
+  createUser,
+  getUser,
+  getUsers,
+  updateUser,
+  updateAvatar } = require('../controllers/users');
 
 
 router.get('/', getUsers);
 router.get('/:userId', getUser);
 router.post('/', createUser);
+
+router.patch('/me', updateUser);
+router.patch('/me/avatar', updateAvatar);
 
 module.exports = router;
 

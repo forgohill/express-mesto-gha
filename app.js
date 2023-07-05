@@ -15,6 +15,7 @@ const app = express();
 
 // подключаем базу данных
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
+  // mongoose.connect('mongodb://localhost:27017/mestodb')
   .then((data) => {
     console.log('mongobd connecting');
   })
@@ -26,6 +27,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
 app.use((req, res, next) => {
   req.user = {
     _id: '64a410674333ff3ca0f2290a' // тут _id одного из созданных пользователей
+    // _id: '64a412f14811e93539c8fa13' // тут _id одного из созданных пользователей
   };
 
   next();

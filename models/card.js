@@ -22,7 +22,6 @@ const cardSchema = new mongoose.Schema({
   },
   likes: [{
     type: mongoose.Schema.Types.ObjectId,
-    // ref: 'user',
     default: [],
   }],
   createAt: {
@@ -31,7 +30,7 @@ const cardSchema = new mongoose.Schema({
   },
 });
 
-// создаем модель card на основе схемы Юзер
+// создаем модель Card на основе схемы card
 const Card = mongoose.model('card', cardSchema);
 
 // экспортируем модель
