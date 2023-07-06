@@ -7,9 +7,14 @@
  * DELETE /cards/:cardId/likes — убрать лайк с карточки
  */
 
-
 const router = require('express').Router();
-const { createCard, getCards, deleteCards, putCardsLikes, deleteCardsLikes } = require('../controllers/cards');
+const {
+  createCard,
+  getCards,
+  deleteCards,
+  putCardsLikes,
+  deleteCardsLikes,
+} = require('../controllers/cards');
 
 router.get('/', getCards);
 router.post('/', createCard);
@@ -17,11 +22,4 @@ router.delete('/:cardId', deleteCards);
 router.put('/:cardId/likes', putCardsLikes);
 router.delete('/:cardId/likes', deleteCardsLikes);
 
-
 module.exports = router;
-
-
-
-
-
-

@@ -15,21 +15,16 @@ const app = express();
 
 // подключаем базу данных
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
-  // mongoose.connect('mongodb://localhost:27017/mestodb')
-  .then((data) => {
-    console.log('mongobd connecting');
+  .then(() => {
+    console.log('Соединение с базой данной установлено.');
   })
   .catch((error) => {
-    console.log(error);
+    console.log(`Ошибка соединения с базой данных ${error.message}`);
   });
 
 // временное решение авторизации
 app.use((req, res, next) => {
-  req.user = {
-    _id: '64a410674333ff3ca0f22901' // тут _id одного из созданных пользователей
-    // _id: '64a412f14811e93539c8fa13' // тут _id одного из созданных пользователей
-  };
-
+  req.user = { _id: '64a410674333ff3ca0f2290a' }; // тут _id одного из созданных пользователей
   next();
 });
 
@@ -46,4 +41,4 @@ app.use('/cards', cardsRouter);
 app.get('/', (req, res) => res.send('Hello World!'));
 
 // создаем слушателя PORT, 2й аргумент колбек — выводим сообщение
-app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));
+app.listen(PORT, () => console.log(`Приложение можно прослушать на порту: ${PORT}!`));

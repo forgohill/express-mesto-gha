@@ -1,6 +1,6 @@
 // импорт модели user
-const { query } = require('express');
 const User = require('../models/user');
+
 const {
   STATUS_CODE,
   ERROR_USER_DATA_REDACT_MESSAGE,
@@ -8,21 +8,17 @@ const {
   ERROR_USER_DATA_STRING_MESSAGE,
   ERROR_USER_AVATAR_STRING_MESSAGE,
   ERROR_USER_DATA_MESSAGE,
-  ERROR_CARD_DATA_MESSAGE,
   USER_NOT_FOUND_MESSAGE,
-  CARD_NOT_FOUND_MESSAGE,
   ERROR_SERVER_MESSAGE,
-  DATA_NOT_FOUND_MESSAGE } = require('../utils/constants');
-
+  DATA_NOT_FOUND_MESSAGE,
+} = require('../utils/constants');
 
 // функция создания записи user
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => {
-      res.status(STATUS_CODE.SUCCESS_CREATE).send(user);
-    })
+    .then((user) => res.status(STATUS_CODE.SUCCESS_CREATE).send(user))
     .catch((error) => {
       if (error.name === 'ValidationError') {
         res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_DATA_MESSAGE });
@@ -35,10 +31,7 @@ const createUser = (req, res) => {
 // функция вызова списка user
 const getUsers = (req, res) => {
   User.find({})
-    .then((user) => {
-      // console.log(user);
-      res.send(user);
-    })
+    .then((user) => res.send(user))
     .catch(() => {
       res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
     });
@@ -49,94 +42,76 @@ const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
     .then((user) => {
-      // console.log(user);
       if (!user) {
         return res.status(STATUS_CODE.NOT_FOUND).send({ message: USER_NOT_FOUND_MESSAGE });
       }
-      res.send(user);
+      return res.send(user);
     })
     .catch((error) => {
-      // /*
       if (error.name === 'ValidationError' || error.name === 'CastError') {
         res.status(STATUS_CODE.DATA_ERROR).send({ message: DATA_NOT_FOUND_MESSAGE });
       } else {
         res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
-      };
-      //  */
-
-      // console.log(error);
-      // res.status(400).send(error);
+      }
     });
 };
 
 // обновление User
 const updateUser = (req, res) => {
   const { name, about } = req.body;
-  if (!name || !about) {
-    return res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_DATA_STRING_MESSAGE })
-  };
 
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true, upsert: false })
+  if (!name || !about) {
+    return res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_DATA_STRING_MESSAGE });
+  }
+  return User.findByIdAndUpdate(
+    req.user._id,
+    { name, about },
+    { new: true, runValidators: true, upsert: false },
+  )
     .then((user) => {
-      // console.log(user);
       if (!user) {
         return res.status(STATUS_CODE.NOT_FOUND).send({ message: USER_NOT_FOUND_MESSAGE });
       }
-      res.send(user);
+      return res.send(user);
     })
     .catch((error) => {
-      // /**
-      //  *
-
       if (error.name === 'ValidationError' || error.name === 'CastError') {
         res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_DATA_REDACT_MESSAGE });
       } else {
         res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
-      };
-
-      // */
-      // console.log(error);
-      // res.status(400).send(error);
+      }
     });
-}
+};
 
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  console.log(req.body);
-
   if (!avatar) {
-    return res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_AVATAR_STRING_MESSAGE })
+    return res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_AVATAR_STRING_MESSAGE });
   }
-
-  User.findByIdAndUpdate(
-    req.user._id, { avatar }, { new: true, runValidators: true })
+  return User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
+    { new: true, runValidators: true },
+  )
     .then((user) => {
-      // console.log(user);
       if (!user) {
         return res.status(STATUS_CODE.NOT_FOUND).send({ message: USER_NOT_FOUND_MESSAGE });
       }
-      res.send(user);
+      return res.send(user);
     })
     .catch((error) => {
-
       if (error.name === 'ValidationError' || error.name === 'CastError') {
         res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_AVATAR_REDACT_MESSAGE });
       } else {
         res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
-      };
-      /**
-      console.log(error);
-      res.status(400).send(error);
-       */
+      }
     });
-
-}
-
+};
 
 module.exports = {
   createUser,
   getUser,
   getUsers,
   updateUser,
-  updateAvatar
+  updateAvatar,
 };
