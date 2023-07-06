@@ -10,6 +10,8 @@ const { PORT = 3000 } = process.env;
 const usersRouter = require('./routes/users');
 // импорт cardsRouter
 const cardsRouter = require('./routes/cards');
+// импорт статусов
+const { STATUS_CODE } = require('./utils/constants');
 // запускаем приложение из пакета экспресс
 const app = express();
 
@@ -37,8 +39,11 @@ app.use('/users', usersRouter);
 // используем при обращаении к /cards
 app.use('/cards', cardsRouter);
 
-// выводим сообщение на экран
-app.get('/', (req, res) => res.send('Hello World!'));
+// обработка несуществующей страницы
+app.use((req, res, next) => {
+  res.status(STATUS_CODE.NOT_FOUND).send({ message: 'URL запроса не существует' });
+  next();
+});
 
 // создаем слушателя PORT, 2й аргумент колбек — выводим сообщение
 app.listen(PORT, () => console.log(`Приложение можно прослушать на порту: ${PORT}!`));
