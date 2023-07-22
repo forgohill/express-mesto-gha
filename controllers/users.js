@@ -15,9 +15,9 @@ const {
 
 // функция создания записи user
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const { name, about, avatar, email, password } = req.body;
 
-  User.create({ name, about, avatar })
+  User.create({ name, about, avatar, email, password })
     .then((user) => res.status(STATUS_CODE.SUCCESS_CREATE).send(user))
     .catch((error) => {
       if (error.name === 'ValidationError') {
