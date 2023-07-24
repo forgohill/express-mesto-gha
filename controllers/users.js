@@ -1,6 +1,12 @@
 // импорт модели user
 const User = require('../models/user');
 
+// создание токена
+const jwt = require('jsonwebtoken');
+
+// поключаем фукнцию—криптограф
+const bcrypt = require('bcryptjs');
+
 const {
   STATUS_CODE,
   ERROR_USER_DATA_REDACT_MESSAGE,
@@ -14,6 +20,28 @@ const {
 } = require('../utils/constants');
 
 // функция создания записи user
+const createUser = (req, res, next) => {
+  const { name, about, avatar, email, password } = req.body;
+  bcrypt.hash(req.body.password, 10)
+    .then((hash) => {
+      User.create({ name, about, avatar, email, password: hash })
+        .then((user) => {
+          // user.password = undefined;
+          res.status(STATUS_CODE.SUCCESS_CREATE).send(user)
+        })
+        .catch((err) => {
+          if (err.code === 11000) {
+            res.status(400).send({ message: 'имя пользователя занято' });
+          }
+          else { return res.status(400).send(err); }
+        })
+    })
+
+};
+
+/**
+ * старая 13 пр *
+ *
 const createUser = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
 
@@ -27,6 +55,7 @@ const createUser = (req, res) => {
       }
     });
 };
+ */
 
 // функция вызова списка user
 const getUsers = (req, res) => {
@@ -108,10 +137,33 @@ const updateAvatar = (req, res) => {
     });
 };
 
+
+
+const login = (req, res) => {
+  // принимаем емайл и пароль
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        'some-secret-key',
+        { expiresIn: '7d' },
+      );
+      return res.send({ token });
+    })
+    .catch((err) => {
+      res
+        .status(401)
+        .send({ message: err.message });
+    });
+}
+
 module.exports = {
   createUser,
   getUser,
   getUsers,
   updateUser,
   updateAvatar,
+  login
 };

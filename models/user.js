@@ -2,6 +2,8 @@
 
 // подключаем монгус
 const mongoose = require('mongoose');
+// поключаем фукнцию—криптограф
+const bcrypt = require('bcryptjs');
 
 // схема User
 const userSchema = new mongoose.Schema({
@@ -35,6 +37,29 @@ const userSchema = new mongoose.Schema({
     select: false
   },
 });
+
+// создаем метод внутри схемы монгуста
+userSchema.statics.findUserByCredentials = function (email, password) {
+  // console.log(email, password);
+  return this.findOne({ email }).select('+password')
+    .then((user) => {
+      // проверим есть email или нет
+      if (!user) {
+        return Promise.reject(new Error('неверные почта или пароль'));
+      }
+      // если нешел — сравним ХЭШ
+      return bcrypt.compare(password, user.password)
+        .then((matched) => {
+          if (!matched) {
+            Promise.reject(new Error(' __ неверные почта или пароль'));
+          }
+          return user;
+        })
+
+    })
+
+}
+
 
 // создаем модель user на основе схемы Юзер
 const User = mongoose.model('user', userSchema);

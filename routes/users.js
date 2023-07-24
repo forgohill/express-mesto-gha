@@ -16,13 +16,19 @@ const {
   getUsers,
   updateUser,
   updateAvatar,
+  login
 } = require('../controllers/users');
 
 router.get('/', getUsers);
 router.get('/:userId', getUser);
-router.post('/', createUser);
+// router.post('/', createUser);
+
+router.post('/signin', login);
+router.post('/signup', createUser);
 
 router.patch('/me', updateUser);
 router.patch('/me/avatar', updateAvatar);
+
+
 
 module.exports = router;
