@@ -20,6 +20,7 @@ const ERROR_USER_DATA_MESSAGE = 'Переданы некорректные да�
 const ERROR_CARD_DATA_MESSAGE = 'Переданы некорректные данные при создании карточки';
 const USER_NOT_FOUND_MESSAGE = 'Пользователь с указанным _id не найден';
 const CARD_NOT_FOUND_MESSAGE = 'Карточка с указанным _id не найдена';
+const CARD_NO_ACCESS_DELETE_MESSAGE = 'У Вас нет прав для удаления данной карточки';
 const ERROR_SERVER_MESSAGE = 'Произошла ошибка на сревере';
 const DATA_NOT_FOUND_MESSAGE = 'Данные не найдены';
 
@@ -33,6 +34,7 @@ module.exports = {
   ERROR_CARD_DATA_MESSAGE,
   USER_NOT_FOUND_MESSAGE,
   CARD_NOT_FOUND_MESSAGE,
+  CARD_NO_ACCESS_DELETE_MESSAGE,
   ERROR_SERVER_MESSAGE,
   DATA_NOT_FOUND_MESSAGE,
 };

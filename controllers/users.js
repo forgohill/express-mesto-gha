@@ -158,6 +158,7 @@ const login = (req, res) => {
         .send({ message: err.message });
     });
 }
+
 const getUserInfo = (req, res) => {
   // console.log(req.user);
 

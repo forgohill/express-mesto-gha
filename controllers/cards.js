@@ -13,6 +13,7 @@ const {
   STATUS_CODE,
   ERROR_CARD_DATA_MESSAGE,
   CARD_NOT_FOUND_MESSAGE,
+  CARD_NO_ACCESS_DELETE_MESSAGE,
   ERROR_SERVER_MESSAGE,
   DATA_NOT_FOUND_MESSAGE,
 } = require('../utils/constants');
@@ -47,12 +48,32 @@ const getCards = (req, res) => {
 // функция удаляет конкретную карточку
 const deleteCards = (req, res) => {
   const { cardId } = req.params;
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
     .then((card) => {
+      // const { ownerId } = req.user._id;
+      console.log(req.user._id);
+      console.log(card);
+
       if (!card) {
         return res.status(STATUS_CODE.NOT_FOUND).send({ message: CARD_NOT_FOUND_MESSAGE });
+      } else if (card.owner.equals(req.user._id)) {
+        card.deleteOne().then(() => { res.send({ message: 'Карточка удалена' }) });
+      } else {
+        return res.status(STATUS_CODE.NOT_FOUND).send({ message: CARD_NO_ACCESS_DELETE_MESSAGE });
       }
-      return res.send(card);
+
+      /**
+       *
+            if (!card) {
+              return res.status(STATUS_CODE.NOT_FOUND).send({ message: CARD_NOT_FOUND_MESSAGE });
+            } else if (card.owner.equals(req.user._id)) {
+              console.log('СОВПАДЕНИЕ');
+              return res.send(card);
+            } else {
+              return res.status(STATUS_CODE.NOT_FOUND).send({ message: CARD_NO_ACCESS_DELETE_MESSAGE });
+            }
+      */
+
     })
     .catch((error) => {
       if (error.name === 'ValidationError' || error.name === 'CastError') {

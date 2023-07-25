@@ -29,10 +29,13 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
   });
 
 // временное решение авторизации
+/**
 app.use((req, res, next) => {
   req.user = { _id: '64a410674333ff3ca0f2290a' }; // тут _id одного из созданных пользователей
   next();
 });
+ */
+
 
 // используем bodyParser
 app.use(bodyParser.json());
