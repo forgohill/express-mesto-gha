@@ -12,6 +12,10 @@ const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 // импорт статусов
 const { STATUS_CODE } = require('./utils/constants');
+// импортируем контролеры авторизации и регистрации
+const { login, createUser } = require('./controllers/users');
+// добавим мидлвар авторизации
+const auth = require('./middlewares/auth');
 // запускаем приложение из пакета экспресс
 const app = express();
 
@@ -33,9 +37,13 @@ app.use((req, res, next) => {
 // используем bodyParser
 app.use(bodyParser.json());
 
+app.use('/signin', login);
+app.use('/signup', createUser);
+
+
+app.use(auth);
 // используем при обращаении к /users
 app.use('/users', usersRouter);
-
 // используем при обращаении к /cards
 app.use('/cards', cardsRouter);
 

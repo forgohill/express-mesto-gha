@@ -26,7 +26,7 @@ const createUser = (req, res, next) => {
     .then((hash) => {
       User.create({ name, about, avatar, email, password: hash })
         .then((user) => {
-          // user.password = undefined;
+          user.password = undefined;
           res.status(STATUS_CODE.SUCCESS_CREATE).send(user)
         })
         .catch((err) => {
@@ -158,6 +158,20 @@ const login = (req, res) => {
         .send({ message: err.message });
     });
 }
+const getUserInfo = (req, res) => {
+  // console.log(req.user);
+
+  User.findById(req.user._id).select('+email')
+    .then((user) => { res.send(user); })
+    .catch(
+      (err) => {
+        res
+          .status(401)
+          .send({ message: err.message });
+      }
+    )
+}
+
 
 module.exports = {
   createUser,
@@ -165,5 +179,6 @@ module.exports = {
   getUsers,
   updateUser,
   updateAvatar,
-  login
+  login,
+  getUserInfo
 };
