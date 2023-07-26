@@ -16,7 +16,7 @@ const { STATUS_CODE } = require('./utils/constants');
 // const { login, createUser } = require('./controllers/users');
 
 // повдключим роуты с авторизацией
-const router = require('./routes/index');
+const router = require('./routes');
 
 // включаем кукаПарсер
 const cookieParser = require('cookie-parser');

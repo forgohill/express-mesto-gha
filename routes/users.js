@@ -8,28 +8,26 @@
  */
 
 const router = require('express').Router();
-
+const validations = require('../middlewares/validations');
 // импорт котроллеров
 const {
-  createUser,
   getUser,
   getUsers,
   updateUser,
   updateAvatar,
-  // login
   getUserInfo
 } = require('../controllers/users');
 
 router.get('/', getUsers);
 router.get('/me', getUserInfo);
-router.get('/:userId', getUser);
+router.get('/:userId', validations.getUser, getUser);
 // router.post('/', createUser);
 
 // router.post('/signin', login);
 // router.post('/signup', createUser);
 
-router.patch('/me', updateUser);
-router.patch('/me/avatar', updateAvatar);
+router.patch('/me', validations.updateUser, updateUser);
+router.patch('/me/avatar', validations.updateAvatar, updateAvatar);
 
 
 
