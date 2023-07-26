@@ -5,13 +5,17 @@
  * 500 — ошибка по-умолчанию.
  */
 
+// КОСТАНТЫ СТАТУСОВ
 const STATUS_CODE = {
   SUCCESS_CREATE: 201,
   DATA_ERROR: 400,
   NOT_FOUND: 404,
   SERVER_ERROR: 500,
 };
+// КОНСТАНТЫ ВАЛДАЦИИ
+const URL_REGEX = /https?:\/\/(www)?[0-9a-zA-Z-._~:/?#\[\]@!\$&'\(\)\*\+,;=]+\.\w{2,3}/
 
+// КОНСТАНТЫ СООБЩЕНИЙ ОШИБОК
 const ERROR_USER_DATA_REDACT_MESSAGE = 'Переданы некорректные данные или _id при редактировании пользователя';
 const ERROR_USER_AVATAR_REDACT_MESSAGE = 'Переданы некорректные данные или _id при редактировании аватара пользователя';
 const ERROR_USER_DATA_STRING_MESSAGE = 'Ошибка в именовании поля name или about';
@@ -26,6 +30,7 @@ const DATA_NOT_FOUND_MESSAGE = 'Данные не найдены';
 
 module.exports = {
   STATUS_CODE,
+  URL_REGEX,
   ERROR_USER_DATA_REDACT_MESSAGE,
   ERROR_USER_AVATAR_REDACT_MESSAGE,
   ERROR_USER_DATA_STRING_MESSAGE,

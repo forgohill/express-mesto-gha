@@ -150,7 +150,12 @@ const login = (req, res) => {
         'some-secret-key',
         { expiresIn: '7d' },
       );
-      return res.send({ token });
+      // return res.send({ token });
+      return res.cookie('jwt', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        sameSite: true,
+      }).send({ _id: user._id });
     })
     .catch((err) => {
       res
