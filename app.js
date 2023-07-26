@@ -12,8 +12,12 @@ const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 // импорт статусов
 const { STATUS_CODE } = require('./utils/constants');
+
 // импортируем контролеры авторизации и регистрации
 // const { login, createUser } = require('./controllers/users');
+
+// подключим обработчик ошибок от celebrate
+const { errors } = require('celebrate');
 
 // повдключим роуты с авторизацией
 const router = require('./routes');
@@ -70,6 +74,8 @@ app.use((req, res, next) => {
   res.status(STATUS_CODE.NOT_FOUND).send({ message: 'URL запроса не существует' });
   next();
 });
+
+app.use(errors());
 
 // создаем слушателя PORT, 2й аргумент колбек — выводим сообщение
 app.listen(PORT, () => console.log(`Приложение можно прослушать на порту: ${PORT}!`));
