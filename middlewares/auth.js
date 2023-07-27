@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-
+const handleErrors = require('../middlewares/handleErrors')
 module.exports = (req, res, next) => {
   console.log('старт авторизации');
   console.log(req.cookies.jwt);
@@ -7,7 +7,8 @@ module.exports = (req, res, next) => {
   console.log('шаг 1');
 
   if (!token) {
-    return res.status(401).send({ message: 'необходима авторизация 1' });
+    // return res.status(401).send({ message: 'UNAUTHORIZED_ERROR_MESSAGE' });
+    return handleErrors({ name: 'UNAUTHORIZED_ERROR_MESSAGE' }, req, res, next);
   }
 
   let payload;
@@ -16,8 +17,10 @@ module.exports = (req, res, next) => {
     payload = jwt.verify(token, 'some-secret-key');
   } catch (err) {
     // ошибка если не верифицировали токен
-    return res.status(401).send({ message: 'необходима авторизация 2' });
+    // return res.status(401).send({ message: 'UNAUTHORIZED_ERROR_MESSAGE' });
+    return handleErrors({ name: 'UNAUTHORIZED_ERROR_MESSAGE' }, req, res, next);
   }
+
   req.user = payload;
   next();
 }

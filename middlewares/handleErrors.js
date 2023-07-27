@@ -1,13 +1,5 @@
 /**
-  * 400 — переданы некорректные данные в методы создания карточки, пользователя;
-  * обновления аватара пользователя или профиля;
-  * 401 — ошибка авторизации;
-  * 403 — доступ запрещен;
-  * 409 — ошибка уникального поля;
-  * 404 — карточка или пользователь не найден;
-  * 500 — ошибка по-умолчанию;
-*/
-
+ *
 // КОСТАНТЫ СТАТУСОВ
 const STATUS_CODE = {
   SUCCESS_DONE: 200,
@@ -37,15 +29,15 @@ const DATA_NOT_FOUND_MESSAGE = 'Данные не найдены';
 const SUCCESSFUL_REMOVE_MESSAGE = 'Карточка удалена';
 const ERROR_REMOVE_NOT_RIGHTS_MESSAGE = 'Нет прав для удаления пользователя, карточка принадлежит другому пользователю';
 const NOT_UNIQUE_EMAIL_MESSAGE = 'Пользователь с таким email уже зарегистрирован';
-const AUTHORISATION_ERROR_MESSAGE = 'Неправильные почта или пароль';
+const AUTHORISATION_ERROR_MESSAGE = 'Ошибка авторизации';
 const UNAUTHORIZED_ERROR_MESSAGE = 'Ошибка, требуется авторизация';
 const EMPTY_NAME_MESSAGE = 'Поле «Название» не может быть пустым';
 const EMPTY_LINK_MESSAGE = 'Поле «Ссылка на картинку» не может быть пустым';
 const URL_NOT_FOUND = 'URL запроса не существует';
+ */
 
-module.exports = {
+const {
   STATUS_CODE,
-  URL_REGEX,
   ERROR_USER_DATA_REDACT_MESSAGE,
   ERROR_USER_AVATAR_REDACT_MESSAGE,
   ERROR_USER_DATA_STRING_MESSAGE,
@@ -65,4 +57,28 @@ module.exports = {
   EMPTY_NAME_MESSAGE,
   EMPTY_LINK_MESSAGE,
   URL_NOT_FOUND,
+} = require('../utils/constants');
+
+module.exports = handleErrors = (err, req, res, next) => {
+  if (err.name === 'URL_NOT_FOUND') {
+    console.log('ошибка была в обработчике ошибок «404»')
+    res.status(STATUS_CODE.NOT_FOUND).send({ message: URL_NOT_FOUND });
+  }
+  if (err.code === 11000) {
+    console.log('ошибка была в обработчике ошибок «409»')
+    res.status(STATUS_CODE.DATA_DUBLICATE).send({ message: NOT_UNIQUE_EMAIL_MESSAGE });
+  }
+  // if (err.statusCode === STATUS_CODE.DATA_ERROR) {
+  //   console.log('ошибка была в обработчике ошибок «400»')
+  //   res.status(STATUS_CODE.DATA_DUBLICATE).send({ message: NOT_UNIQUE_EMAIL_MESSAGE });
+  // }
+  if (err.message === 'AUTHORISATION_ERROR_MESSAGE') {
+    console.log('ошибка была в обработчике ошибок «401»')
+    res.status(STATUS_CODE.AUTH_ERROR).send({ message: AUTHORISATION_ERROR_MESSAGE });
+  }
+  if (err.name === 'UNAUTHORIZED_ERROR_MESSAGE') {
+    console.log('ошибка была в обработчике ошибок «401»')
+    res.status(STATUS_CODE.AUTH_ERROR).send({ message: UNAUTHORIZED_ERROR_MESSAGE });
+  }
+  return next();
 };

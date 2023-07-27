@@ -11,14 +11,14 @@ const usersRouter = require('./routes/users');
 // импорт cardsRouter
 const cardsRouter = require('./routes/cards');
 // импорт статусов
-const { STATUS_CODE } = require('./utils/constants');
+const { STATUS_CODE, URL_NOT_FOUND } = require('./utils/constants');
 
 // импортируем контролеры авторизации и регистрации
 // const { login, createUser } = require('./controllers/users');
 
 // подключим обработчик ошибок от celebrate
 const { errors } = require('celebrate');
-
+const handleErrors = require('./middlewares/handleErrors');
 // повдключим роуты с авторизацией
 const router = require('./routes');
 
@@ -70,12 +70,22 @@ app.use(router);
 // app.use('/cards', cardsRouter);
 
 // обработка несуществующей страницы
-app.use((req, res, next) => {
-  res.status(STATUS_CODE.NOT_FOUND).send({ message: 'URL запроса не существует' });
+// app.use((req, res, next) => {
+//   res.status(STATUS_CODE.NOT_FOUND).send({ message: 'URL запроса не существует' });
+//   next();
+// });
+app.use('/', (req, res, next) => {
+  // res.status(STATUS_CODE.NOT_FOUND).send({ message: 'URL запроса не существует' });
+  handleErrors({ name: 'URL_NOT_FOUND' }, req, res, next);
   next();
 });
-
 app.use(errors());
 
+app.use((err, req, res, next) => {
+  handleErrors(err, req, res, next);
+});
+
+app.use(require('./middlewares/errorServer'));
+// app.use(globalError())
 // создаем слушателя PORT, 2й аргумент колбек — выводим сообщение
 app.listen(PORT, () => console.log(`Приложение можно прослушать на порту: ${PORT}!`));
