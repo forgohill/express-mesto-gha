@@ -12,19 +12,19 @@ const userSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30,
     required: false,
-    // default: 'Жак-Ив-Кусто',
+    default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     minlength: 2,
     maxlength: 30,
     required: false,
-    // default: 'Исследователь',
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
     required: false,
-    // default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator(url) {
         return URL_REGEX.test(url);
