@@ -89,8 +89,8 @@ module.exports = handleErrors = (err, req, res, next) => {
     res.status(STATUS_CODE.NOT_FOUND).send({ message: CARD_NOT_FOUND_MESSAGE });
   }
   if (err.message === 'CARD_NO_ACCESS_DELETE_MESSAGE') {
-    console.log('ошибка была в обработчике ошибок «!_404»')
-    res.status(STATUS_CODE.NOT_FOUND).send({ message: CARD_NO_ACCESS_DELETE_MESSAGE });
+    console.log('ошибка была в обработчике ошибок «!_403»')
+    res.status(STATUS_CODE.ACCESS_IS_DENIED).send({ message: CARD_NO_ACCESS_DELETE_MESSAGE });
   }
   return next();
 };
