@@ -6,30 +6,14 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 // берем присвоение порта из лобального окружения
 const { PORT = 3000 } = process.env;
-// импорт usersRouter
-const usersRouter = require('./routes/users');
-// импорт cardsRouter
-const cardsRouter = require('./routes/cards');
-// импорт статусов
-const { STATUS_CODE, URL_NOT_FOUND } = require('./utils/constants');
-
-// импортируем контролеры авторизации и регистрации
-// const { login, createUser } = require('./controllers/users');
-
+// включаем кукаПарсер
+const cookieParser = require('cookie-parser');
 // подключим обработчик ошибок от celebrate
 const { errors } = require('celebrate');
+// подключаем обработчик нестандратных ошибок
 const handleErrors = require('./middlewares/handleErrors');
 // повдключим роуты с авторизацией
 const router = require('./routes');
-
-// включаем кукаПарсер
-const cookieParser = require('cookie-parser');
-
-/**
- // добавим мидлвар авторизации
-const auth = require('./middlewares/auth');
- */
-
 // запускаем приложение из пакета экспресс
 const app = express();
 
@@ -42,50 +26,26 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb')
     console.log(`Ошибка соединения с базой данных ${error.message}`);
   });
 
-// временное решение авторизации
-/**
-app.use((req, res, next) => {
-  req.user = { _id: '64a410674333ff3ca0f2290a' }; // тут _id одного из созданных пользователей
-  next();
-});
- */
-
-
 // используем bodyParser
 app.use(bodyParser.json());
 // используем cookieParser
 app.use(cookieParser());
-
-// app.use('/signin', login);
-// app.use('/signup', createUser);
-
-
-// app.use(auth);
+// подключаем роутеры
 app.use(router);
 
-
-// используем при обращаении к /users
-// app.use('/users', usersRouter);
-// используем при обращаении к /cards
-// app.use('/cards', cardsRouter);
-
-// обработка несуществующей страницы
-// app.use((req, res, next) => {
-//   res.status(STATUS_CODE.NOT_FOUND).send({ message: 'URL запроса не существует' });
-//   next();
-// });
+// обработка ошибки не правильно роута URL_NOT_FOUND
 app.use('/', (req, res, next) => {
-  // res.status(STATUS_CODE.NOT_FOUND).send({ message: 'URL запроса не существует' });
   handleErrors({ name: 'URL_NOT_FOUND' }, req, res, next);
   next();
 });
+// обработка ошибок от JOI.CELEBRATE
 app.use(errors());
-
+// обработка нестандартных ошибок
 app.use((err, req, res, next) => {
   handleErrors(err, req, res, next);
 });
 
 app.use(require('./middlewares/errorServer'));
-// app.use(globalError())
+
 // создаем слушателя PORT, 2й аргумент колбек — выводим сообщение
 app.listen(PORT, () => console.log(`Приложение можно прослушать на порту: ${PORT}!`));

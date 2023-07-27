@@ -13,5 +13,4 @@ router.use(auth);
 router.use('/users', usersRouter);
 router.use('/cards', cardsRouter);
 
-// router.all('*', (req, res, next) => next(new NotFoundError('Неверный URL запроса')));
 module.exports = router;

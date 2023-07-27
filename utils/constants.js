@@ -20,7 +20,7 @@ const STATUS_CODE = {
   SERVER_ERROR: 500,
 };
 // КОНСТАНТЫ ВАЛДАЦИИ
-const URL_REGEX = /https?:\/\/(www)?[0-9a-zA-Z-._~:/?#\[\]@!\$&'\(\)\*\+,;=]+\.\w{2,3}/
+const URL_REGEX = /https?:\/\/(www)?[0-9a-zA-Z-._~:/?#\[\]@!\$&'\(\)\*\+,;=]+\.\w{2,3}/ //eslint-disable-line
 
 // КОНСТАНТЫ СООБЩЕНИЙ
 const ERROR_USER_DATA_REDACT_MESSAGE = 'Переданы некорректные данные или _id при редактировании пользователя';
