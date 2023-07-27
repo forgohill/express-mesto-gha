@@ -80,5 +80,9 @@ module.exports = handleErrors = (err, req, res, next) => {
     console.log('ошибка была в обработчике ошибок «401»')
     res.status(STATUS_CODE.AUTH_ERROR).send({ message: UNAUTHORIZED_ERROR_MESSAGE });
   }
+  if (err.message === 'USER_NOT_FOUND_MESSAGE') {
+    console.log('ошибка была в обработчике ошибок «404»')
+    res.status(STATUS_CODE.NOT_FOUND).send({ message: USER_NOT_FOUND_MESSAGE });
+  }
   return next();
 };

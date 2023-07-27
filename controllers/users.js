@@ -120,83 +120,92 @@ const createUser = (req, res) => {
  */
 
 // функция вызова списка user
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send(user))
-    .catch(() => {
-      res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
-    });
+    // .catch(() => {
+    //   res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
+    // });
+    .catch(next);
 };
 
 // функция вызова пользователя по ID
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        return res.status(STATUS_CODE.NOT_FOUND).send({ message: USER_NOT_FOUND_MESSAGE });
+        console.log(' я туть')
+        return Promise.reject(new Error('USER_NOT_FOUND_MESSAGE'));
+        // return res.status(STATUS_CODE.NOT_FOUND).send({ message: USER_NOT_FOUND_MESSAGE });
       }
       return res.send(user);
     })
-    .catch((error) => {
-      if (error.name === 'ValidationError' || error.name === 'CastError') {
-        res.status(STATUS_CODE.DATA_ERROR).send({ message: DATA_NOT_FOUND_MESSAGE });
-      } else {
-        res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
-      }
-    });
+    // .catch((error) => {
+    //   if (error.name === 'ValidationError' || error.name === 'CastError') {
+    //     res.status(STATUS_CODE.DATA_ERROR).send({ message: DATA_NOT_FOUND_MESSAGE });
+    //   } else {
+    //     res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
+    //   }
+    // });
+    .catch(next);
 };
 
 // обновление User
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
 
-  if (!name || !about) {
-    return res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_DATA_STRING_MESSAGE });
-  }
+  // if (!name || !about) {
+  //   return res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_DATA_STRING_MESSAGE });
+  // }
+
   return User.findByIdAndUpdate(
     req.user._id,
     { name, about },
     { new: true, runValidators: true, upsert: false },
   )
     .then((user) => {
-      if (!user) {
-        return res.status(STATUS_CODE.NOT_FOUND).send({ message: USER_NOT_FOUND_MESSAGE });
-      }
+      // if (!user) {
+      // return res.status(STATUS_CODE.NOT_FOUND).send({ message: USER_NOT_FOUND_MESSAGE });
+      // console.log(' я туть апдейть')
+      // return Promise.reject(new Error('USER_NOT_FOUND_MESSAGE'));
+      // }
       return res.send(user);
     })
-    .catch((error) => {
-      if (error.name === 'ValidationError' || error.name === 'CastError') {
-        res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_DATA_REDACT_MESSAGE });
-      } else {
-        res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
-      }
-    });
+    // .catch((error) => {
+    //   if (error.name === 'ValidationError' || error.name === 'CastError') {
+    //     res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_DATA_REDACT_MESSAGE });
+    //   } else {
+    //     res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
+    //   }
+    // });
+    .catch(next);
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  if (!avatar) {
-    return res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_AVATAR_STRING_MESSAGE });
-  }
+  // if (!avatar) {
+  //   return res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_AVATAR_STRING_MESSAGE });
+  // }
   return User.findByIdAndUpdate(
     req.user._id,
     { avatar },
     { new: true, runValidators: true },
   )
     .then((user) => {
-      if (!user) {
-        return res.status(STATUS_CODE.NOT_FOUND).send({ message: USER_NOT_FOUND_MESSAGE });
-      }
+      // if (!user) {
+      //   return res.status(STATUS_CODE.NOT_FOUND).send({ message: USER_NOT_FOUND_MESSAGE });
+      // }
       return res.send(user);
     })
-    .catch((error) => {
-      if (error.name === 'ValidationError' || error.name === 'CastError') {
-        res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_AVATAR_REDACT_MESSAGE });
-      } else {
-        res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
-      }
-    });
+    // .catch((error) => {
+    //   if (error.name === 'ValidationError' || error.name === 'CastError') {
+    //     res.status(STATUS_CODE.DATA_ERROR).send({ message: ERROR_USER_AVATAR_REDACT_MESSAGE });
+    //   } else {
+    //     res.status(STATUS_CODE.SERVER_ERROR).send({ message: ERROR_SERVER_MESSAGE });
+    //   }
+    // });
+    .catch(next);
 };
 
 

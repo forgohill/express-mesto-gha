@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const handleErrors = require('../middlewares/handleErrors')
+const handleErrors = require('../middlewares/handleErrors');
 module.exports = (req, res, next) => {
   console.log('старт авторизации');
   console.log(req.cookies.jwt);
