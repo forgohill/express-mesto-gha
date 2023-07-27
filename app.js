@@ -43,6 +43,7 @@ app.use(errors());
 // обработка нестандартных ошибок
 app.use((err, req, res, next) => {
   handleErrors(err, req, res, next);
+  next();
 });
 
 app.use(require('./middlewares/errorServer'));
