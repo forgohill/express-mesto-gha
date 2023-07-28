@@ -7,5 +7,5 @@ class ErrorConflict extends Error {
     this.statusCode = STATUS_CODE.DATA_DUBLICATE;
   }
 }
-
+// експорт
 module.exports = ErrorConflict;
