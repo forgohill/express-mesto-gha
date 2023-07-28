@@ -10,11 +10,9 @@ const { PORT = 3000 } = process.env;
 const cookieParser = require('cookie-parser');
 // подключим обработчик ошибок от celebrate
 const { errors } = require('celebrate');
-// подключаем обработчик нестандратных ошибок
-const handleErrors = require('./middlewares/handleErrors');
 // подключаем обработчик класса ошибки
-const errorNotFound = require('./errors/errorNotFound');
-
+const ErrorNotFound = require('./errors/ErrorNotFound');
+// поддключаем файл с константами
 const { URL_NOT_FOUND } = require('./utils/constants');
 // повдключим роуты с авторизацией
 const router = require('./routes');
@@ -39,16 +37,11 @@ app.use(router);
 
 // обработка ошибки не правильно роута URL_NOT_FOUND
 app.use('/', (req, res, next) => {
-  next(new errorNotFound(URL_NOT_FOUND));
+  next(new ErrorNotFound(URL_NOT_FOUND));
 });
 // обработка ошибок от JOI.CELEBRATE
 app.use(errors());
-// обработка нестандартных ошибок
-// app.use((err, req, res, next) => {
-//   handleErrors(err, req, res, next);
-//   next();
-// });
-
+// обработка глобальных ошибок
 app.use(require('./middlewares/errorGlobal'));
 
 // создаем слушателя PORT, 2й аргумент колбек — выводим сообщение

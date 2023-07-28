@@ -4,13 +4,12 @@ const mongoose = require('mongoose');
 // поключаем фукнцию—криптограф
 const bcrypt = require('bcryptjs');
 // подключаем обработчик класса ошибки
-const errorUnauthorized = require('../errors/errorUnauthorized');
+const ErrorUnauthorized = require('../errors/ErrorUnauthorized');
 // поддключаем файл с константами
 const {
   URL_REGEX,
   AUTHORISATION_ERROR_MESSAGE,
 } = require('../utils/constants');
-
 
 // схема User
 const userSchema = new mongoose.Schema({
@@ -56,13 +55,13 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .then((user) => {
       // проверим есть email или нет
       if (!user) {
-        return Promise.reject(new errorUnauthorized(AUTHORISATION_ERROR_MESSAGE));
+        return Promise.reject(new ErrorUnauthorized(AUTHORISATION_ERROR_MESSAGE));
       }
       // если нешел — сравним ХЭШ
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new errorUnauthorized(AUTHORISATION_ERROR_MESSAGE));
+            return Promise.reject(new ErrorUnauthorized(AUTHORISATION_ERROR_MESSAGE));
           }
           return user;
         });

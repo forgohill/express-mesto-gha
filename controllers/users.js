@@ -14,10 +14,11 @@ const jwt = require('jsonwebtoken');
 // импорт модели user
 const User = require('../models/user');
 // подключаем обработчик класса ошибки
-const errorNotFound = require('../errors/errorNotFound');
-const errorConflict = require('../errors/errorConflict');
+const ErrorNotFound = require('../errors/ErrorNotFound');
+const ErrorConflict = require('../errors/ErrorConflict');
 // поддключаем файл с константами
-const { STATUS_CODE,
+const {
+  STATUS_CODE,
   USER_NOT_FOUND_MESSAGE,
   NOT_UNIQUE_EMAIL_MESSAGE,
 } = require('../utils/constants');
@@ -46,11 +47,13 @@ const createUser = (req, res, next) => {
         })
         .catch((err) => {
           if (err.code === 11000) {
-            return next(new errorConflict(NOT_UNIQUE_EMAIL_MESSAGE));
-          } else { return next(err); }
+            return next(new ErrorConflict(NOT_UNIQUE_EMAIL_MESSAGE));
+          }
+          // } else { return next(err); }
+          return next(err);
         });
     })
-    .catch(next);;
+    .catch(next);
 };
 
 const login = (req, res, next) => {
@@ -91,7 +94,7 @@ const getUser = (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        return next(new errorNotFound(USER_NOT_FOUND_MESSAGE));
+        return next(new ErrorNotFound(USER_NOT_FOUND_MESSAGE));
         // return Promise.reject(new Error('USER_NOT_FOUND_MESSAGE'));
       }
       return res.send(user);
