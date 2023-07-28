@@ -49,7 +49,6 @@ const createUser = (req, res, next) => {
           if (err.code === 11000) {
             return next(new ErrorConflict(NOT_UNIQUE_EMAIL_MESSAGE));
           }
-          // } else { return next(err); }
           return next(err);
         });
     })
@@ -95,7 +94,6 @@ const getUser = (req, res, next) => {
     .then((user) => {
       if (!user) {
         return next(new ErrorNotFound(USER_NOT_FOUND_MESSAGE));
-        // return Promise.reject(new Error('USER_NOT_FOUND_MESSAGE'));
       }
       return res.send(user);
     })
