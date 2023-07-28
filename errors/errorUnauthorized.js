@@ -1,3 +1,4 @@
+// поключаем константы
 const { STATUS_CODE } = require('../utils/constants');
 
 class ErrorUnauthorized extends Error {
