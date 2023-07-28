@@ -9,8 +9,16 @@
 
 // подключаем модель Card
 const Card = require('../models/card');
+// подключаем обработчик класса ошибки
+const errorNotFound = require('../errors/errorNotFound');
+const errorForbidden = require('../errors/errorForbidden');
 // поддключаем файл с константами
-const { STATUS_CODE, SUCCESSFUL_REMOVE_MESSAGE } = require('../utils/constants');
+const {
+  STATUS_CODE,
+  SUCCESSFUL_REMOVE_MESSAGE,
+  CARD_NOT_FOUND_MESSAGE,
+  CARD_NO_ACCESS_DELETE_MESSAGE,
+} = require('../utils/constants');
 
 // функция создания карточки
 const createCard = (req, res, next) => {
@@ -33,13 +41,16 @@ const deleteCards = (req, res, next) => {
   Card.findById(cardId)
     .then((card) => {
       if (!card) {
-        return Promise.reject(new Error('CARD_NOT_FOUND_MESSAGE'));
+        return next(new errorNotFound(CARD_NOT_FOUND_MESSAGE));
+        // return Promise.reject(new Error('CARD_NOT_FOUND_MESSAGE'));
       }
       if (card.owner.equals(req.user._id)) {
         return card.deleteOne()
-          .then(() => (res.send({ message: SUCCESSFUL_REMOVE_MESSAGE })));
+          .then(() => (res.send({ message: SUCCESSFUL_REMOVE_MESSAGE })))
+          .catch(next);
       }
-      return Promise.reject(new Error('CARD_NO_ACCESS_DELETE_MESSAGE'));
+      // return Promise.reject(new Error('CARD_NO_ACCESS_DELETE_MESSAGE'));
+      return next(new errorForbidden(CARD_NO_ACCESS_DELETE_MESSAGE));
     })
     .catch(next);
 };
@@ -49,7 +60,8 @@ const putCardsLikes = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
-        return Promise.reject(new Error('CARD_NOT_FOUND_MESSAGE'));
+        // return Promise.reject(new Error('CARD_NOT_FOUND_MESSAGE'));
+        return next(new errorNotFound(CARD_NOT_FOUND_MESSAGE));
       }
       return res.send(card);
     })
@@ -60,7 +72,8 @@ const deleteCardsLikes = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
-        return Promise.reject(new Error('CARD_NOT_FOUND_MESSAGE'));
+        // return Promise.reject(new Error('CARD_NOT_FOUND_MESSAGE'));
+        return next(new errorNotFound(CARD_NOT_FOUND_MESSAGE));
       }
       return res.send(card);
     })

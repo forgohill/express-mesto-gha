@@ -13,8 +13,14 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 // импорт модели user
 const User = require('../models/user');
+// подключаем обработчик класса ошибки
+const errorNotFound = require('../errors/errorNotFound');
+const errorConflict = require('../errors/errorConflict');
 // поддключаем файл с константами
-const { STATUS_CODE } = require('../utils/constants');
+const { STATUS_CODE,
+  USER_NOT_FOUND_MESSAGE,
+  NOT_UNIQUE_EMAIL_MESSAGE,
+} = require('../utils/constants');
 
 // функция создания записи user
 const createUser = (req, res, next) => {
@@ -38,8 +44,13 @@ const createUser = (req, res, next) => {
           user.password = undefined;
           res.status(STATUS_CODE.SUCCESS_CREATE).send(user);
         })
-        .catch(next);
-    });
+        .catch((err) => {
+          if (err.code === 11000) {
+            return next(new errorConflict(NOT_UNIQUE_EMAIL_MESSAGE));
+          } else { return next(err); }
+        });
+    })
+    .catch(next);;
 };
 
 const login = (req, res, next) => {
@@ -80,7 +91,8 @@ const getUser = (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('USER_NOT_FOUND_MESSAGE'));
+        return next(new errorNotFound(USER_NOT_FOUND_MESSAGE));
+        // return Promise.reject(new Error('USER_NOT_FOUND_MESSAGE'));
       }
       return res.send(user);
     })

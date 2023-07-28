@@ -12,6 +12,10 @@ const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 // подключаем обработчик нестандратных ошибок
 const handleErrors = require('./middlewares/handleErrors');
+// подключаем обработчик класса ошибки
+const errorNotFound = require('./errors/errorNotFound');
+
+const { URL_NOT_FOUND } = require('./utils/constants');
 // повдключим роуты с авторизацией
 const router = require('./routes');
 // запускаем приложение из пакета экспресс
@@ -35,18 +39,17 @@ app.use(router);
 
 // обработка ошибки не правильно роута URL_NOT_FOUND
 app.use('/', (req, res, next) => {
-  handleErrors({ name: 'URL_NOT_FOUND' }, req, res, next);
-  next();
+  next(new errorNotFound(URL_NOT_FOUND));
 });
 // обработка ошибок от JOI.CELEBRATE
 app.use(errors());
 // обработка нестандартных ошибок
-app.use((err, req, res, next) => {
-  handleErrors(err, req, res, next);
-  next();
-});
+// app.use((err, req, res, next) => {
+//   handleErrors(err, req, res, next);
+//   next();
+// });
 
-app.use(require('./middlewares/errorServer'));
+app.use(require('./middlewares/errorGlobal'));
 
 // создаем слушателя PORT, 2й аргумент колбек — выводим сообщение
 app.listen(PORT, () => console.log(`Приложение можно прослушать на порту: ${PORT}!`));
