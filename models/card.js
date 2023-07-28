@@ -3,6 +3,8 @@
 // подключаем монгуста
 const mongoose = require('mongoose');
 
+const { URL_REGEX } = require('../utils/constants');
+
 // схема Card
 const cardSchema = new mongoose.Schema({
   name: {
