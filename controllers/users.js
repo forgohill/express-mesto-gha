@@ -16,11 +16,15 @@ const User = require('../models/user');
 // подключаем обработчик класса ошибки
 const ErrorNotFound = require('../errors/ErrorNotFound');
 const ErrorConflict = require('../errors/ErrorConflict');
+const ErrorBadRequest = require('../errors/ErrorBadRequest');
 // поддключаем файл с константами
 const {
   STATUS_CODE,
   USER_NOT_FOUND_MESSAGE,
   NOT_UNIQUE_EMAIL_MESSAGE,
+  ERROR_USER_DATA_MESSAGE,
+  ERROR_USER_DATA_REDACT_MESSAGE,
+  ERROR_USER_AVATAR_REDACT_MESSAGE,
 } = require('../utils/constants');
 
 // функция создания записи user
@@ -46,6 +50,9 @@ const createUser = (req, res, next) => {
           res.status(STATUS_CODE.SUCCESS_CREATE).send(user);
         })
         .catch((err) => {
+          if (err.name === 'ValidationError') {
+            return next(new ErrorBadRequest(ERROR_USER_DATA_MESSAGE));
+          }
           if (err.code === 11000) {
             return next(new ErrorConflict(NOT_UNIQUE_EMAIL_MESSAGE));
           }
@@ -109,7 +116,12 @@ const updateUser = (req, res, next) => {
     { new: true, runValidators: true, upsert: false },
   )
     .then((user) => (res.send(user)))
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return next(new ErrorBadRequest(ERROR_USER_DATA_REDACT_MESSAGE));
+      }
+      return next(err);
+    });
 };
 
 const updateAvatar = (req, res, next) => {
@@ -120,7 +132,12 @@ const updateAvatar = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .then((user) => (res.send(user)))
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return next(new ErrorBadRequest(ERROR_USER_AVATAR_REDACT_MESSAGE));
+      }
+      return next(err);
+    });
 };
 
 module.exports = {

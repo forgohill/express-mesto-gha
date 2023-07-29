@@ -1,4 +1,4 @@
-// поключаем константы
+// поключаем_константы
 const { STATUS_CODE } = require('../utils/constants');
 
 class ErrorForbidden extends Error {

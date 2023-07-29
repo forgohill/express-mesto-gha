@@ -19,7 +19,7 @@ const {
   SUCCESSFUL_REMOVE_MESSAGE,
   CARD_NOT_FOUND_MESSAGE,
   CARD_NO_ACCESS_DELETE_MESSAGE,
-  ERROR_CARD_DATA_MESSAGE
+  ERROR_CARD_DATA_MESSAGE,
 } = require('../utils/constants');
 
 // функция создания карточки
@@ -27,13 +27,12 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => (res.status(STATUS_CODE.SUCCESS_CREATE).send(card)))
-
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return next(new ErrorBadRequest(ERROR_CARD_DATA_MESSAGE));
       }
       return next(err);
-    })
+    });
 };
 
 // функция возвращает все карточки
