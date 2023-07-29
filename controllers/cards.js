@@ -12,13 +12,14 @@ const Card = require('../models/card');
 // подключаем обработчик класса ошибки
 const ErrorNotFound = require('../errors/ErrorNotFound');
 const ErrorForbidden = require('../errors/ErrorForbidden');
-
+const ErrorBadRequest = require('../errors/ErrorBadRequest');
 // поддключаем файл с константами
 const {
   STATUS_CODE,
   SUCCESSFUL_REMOVE_MESSAGE,
   CARD_NOT_FOUND_MESSAGE,
   CARD_NO_ACCESS_DELETE_MESSAGE,
+  ERROR_CARD_DATA_MESSAGE
 } = require('../utils/constants');
 
 // функция создания карточки
@@ -26,7 +27,13 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => (res.status(STATUS_CODE.SUCCESS_CREATE).send(card)))
-    .catch(next);
+
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return next(new ErrorBadRequest(ERROR_CARD_DATA_MESSAGE));
+      }
+      return next(err);
+    })
 };
 
 // функция возвращает все карточки
